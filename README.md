@@ -1,4 +1,4 @@
-VUFORIA SETUP:
+# VUFORIA SETUP:
 
 	1. Go to https://developer.vuforia.com/downloads/sdk
 
@@ -12,30 +12,23 @@ VUFORIA SETUP:
 	5. Click "Update" if there is a popup
 
 
---------------------------------------------------------------------
-
-
-ART FOLDER:
+# ART FOLDER:
 
 	Please put every Art Asset into the "root/ART" folder !
 	
 	Please follow a naming convention !
 
 
---------------------------------------------------------------------
 
-
-SOUND FOLDER:
+# SOUND FOLDER:
 
 	Please put every Sound Asset into the "root/SOUND" folder !
 	
 	Please follow a naming convention !
 
 
---------------------------------------------------------------------
 
-
-TESTING
+# TESTING
 
 	1. In Unity, go to "File > Build Settings" (or press ctrl + shift + B)
 	2. Make sure that all scenes you need in the build have a build index
@@ -45,10 +38,8 @@ TESTING
 	5. Click on "Build And Run", select the "root/Assets/Build" folder, give the application a name and click on "Save"
 		-> if you do not have a "root/Assets/Build" folder, create one (naming is important)
 
---------------------------------------------------------------------
 
-
-ISSUES
+# ISSUES
 
 Phone cannot be found:
 
