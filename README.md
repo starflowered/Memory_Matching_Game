@@ -9,13 +9,13 @@
 
 # ART FOLDER:
 
-Please put every Art Asset into the "root/ART" folder !
+Please put every Art Asset into the "root/Assets/ART" folder !
 	
 Please follow a naming convention !
 
 # SOUND FOLDER:
 
-Please put every Sound Asset into the "root/SOUND" folder !
+Please put every Sound Asset into the "root/Assets/SOUND" folder !
 	
 Please follow a naming convention !
 
