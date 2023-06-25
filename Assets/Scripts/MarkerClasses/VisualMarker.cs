@@ -1,14 +1,21 @@
 ﻿using UnityEngine;
+using Vuforia;
 
 namespace MarkerClasses
 {
     public class VisualMarker : Marker
     {
-        private GameObject _objectModel;
+        public GameObject ObjectModel { get; }
 
-        public VisualMarker(int id, GameObject objectModel) : base(id)
+        // instantiated _objectModel
+        public GameObject PlacedObject { get; set; }
+        public int ID => Id;
+
+        public ImageTargetBehaviour ImageTargetBehaviour1 => ImageTargetBehaviour;
+        
+        public VisualMarker(int id, ImageTargetBehaviour imageTargetBehaviour, GameObject objectModel) : base(id, imageTargetBehaviour)
         {
-            _objectModel = objectModel;
+            ObjectModel = objectModel;
         }
     }
 }

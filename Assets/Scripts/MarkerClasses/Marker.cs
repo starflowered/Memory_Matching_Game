@@ -1,13 +1,19 @@
+using Vuforia;
+
 namespace MarkerClasses
 {
     public abstract class Marker
     {
 
-        protected int ID;
+        protected readonly int Id;
 
-        protected Marker(int id)
+        protected readonly ImageTargetBehaviour ImageTargetBehaviour;
+
+        protected Marker(int id, ImageTargetBehaviour imageTargetBehaviour)
         {
-            ID = id;
+            Id = id;
+            ImageTargetBehaviour = imageTargetBehaviour;
         }
+
     }
 }

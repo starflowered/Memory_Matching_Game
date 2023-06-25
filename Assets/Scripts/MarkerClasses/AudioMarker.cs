@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
+using Vuforia;
 
 namespace MarkerClasses
 {
     public class AudioMarker : Marker
     {
-        private AudioClip _soundClip;
+        public AudioClip SoundClip { get; }
 
-        public AudioMarker(int id, AudioClip soundClip) : base(id)
+        public int ID => Id;
+
+        public ImageTargetBehaviour ImageTargetBehaviour1 => ImageTargetBehaviour;
+        
+        public AudioMarker(int id, ImageTargetBehaviour imageTargetBehaviour, AudioClip soundClip) : base(id, imageTargetBehaviour)
         {
-            _soundClip = soundClip;
+            SoundClip = soundClip;
         }
     }
 }
