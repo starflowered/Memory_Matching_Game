@@ -5,7 +5,10 @@
 3. Download Vuforia Engine 10.15 to "Projectfolder/Assets/Vuforia"\
    **!!! DOWNLOAD LOCATION FOLDER IS IMPORTANT !!!**
 4. In Unity: Double-click on vuforia Unity package inside "Projectfolder/Assets/Vuforia" and then click on "Import"
+	- if unity suggests to enter safe mode please do so and look in the section "Issues" for more information 
 5. Click "Update" if there is a popup
+
+
 
 # ART FOLDER:
 
@@ -13,11 +16,15 @@ Please put every Art Asset into the "root/Assets/ART" folder !
 	
 Please follow a naming convention !
 
+
+
 # SOUND FOLDER:
 
 Please put every Sound Asset into the "root/Assets/SOUND" folder !
 	
 Please follow a naming convention !
+
+
 
 # TESTING
 
@@ -29,7 +36,30 @@ Please follow a naming convention !
 5. Click on "Build And Run", select the "root/Assets/Build" folder, give the application a name and click on "Save"\
 	&rarr; if you do not have a "root/Assets/Build" folder, create one (naming is important)
 
+
+
 # ISSUES
+
+### Errors after cloning repository and integrating Vuforia:
+
+**Please Enter Safe Mode when Unity suggests so, then do the following:**
+
+1. Make sure that you have a file called "com.ptc.vuforia.engine-10.15.4.tgz" inside you "root/Packages" folder
+	- If not, please ask a team member so they can send it to you
+	- Otherwise open a new Unity project and follow the Vuforia steps, then copy the file into this project
+2. Close and reopen the project in Unity (it should not suggest safe mode anymore)
+
+
+**If entering safe mode was not suggested by Unity:**
+
+1. Delete root/Packages/packages-lock.json
+2. Go back to Unity and let it recreate it
+3. Delete root/Packages/manifest.json
+4. Go back to Unity and let it recreate it
+
+**IMPORTANT: DO NOT DELETE BOTH FILES AT THE SAME TIME**
+
+
 
 ### Phone cannot be found:
 

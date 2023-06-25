@@ -4,10 +4,8 @@ namespace MarkerClasses
 {
     public abstract class Marker
     {
-
-        protected readonly int Id;
-
-        protected readonly ImageTargetBehaviour ImageTargetBehaviour;
+        public int Id { get; }
+        public ImageTargetBehaviour ImageTargetBehaviour { get; }
 
         protected Marker(int id, ImageTargetBehaviour imageTargetBehaviour)
         {

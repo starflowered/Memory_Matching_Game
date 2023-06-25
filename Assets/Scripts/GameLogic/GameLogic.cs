@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MarkerClasses;
 using Unity.VisualScripting;
@@ -11,6 +10,8 @@ namespace GameLogic
 {
     public class GameLogic : MonoBehaviour
     {
+        #region Serialized fields
+
         [Header("Marker")] 
         [SerializeField] private List<ImageTargetBehaviour> visualMarkers;
         [SerializeField] private List<ImageTargetBehaviour> audioMarkers;
@@ -21,9 +22,13 @@ namespace GameLogic
 
         [Header("Debug")]
         [SerializeField] private bool debug;
+
+        #endregion
         
-        private AudioMarker currentAudioMarker;
-        private VisualMarker currentVisualMarker;
+        #region fields
+
+        private AudioMarker _currentAudioMarker;
+        private VisualMarker _currentVisualMarker;
 
         // marker id -> marker object
         private Dictionary<int, Marker> _idToMarkerDictionary;
@@ -31,6 +36,8 @@ namespace GameLogic
         private Dictionary<int, int> _matchingMarkerIDs;
 
         private AudioSource _audioSource;
+
+        #endregion
         
         
         private void Start()
@@ -90,22 +97,21 @@ namespace GameLogic
                 return;
             }
             
-
-            int id = marker.ID.Value;
+            var id = marker.ID.Value;
             if (_idToMarkerDictionary[id].GetType() == typeof(AudioMarker))
             {
-                if (currentAudioMarker.IsUnityNull())
+                if (_currentAudioMarker.IsUnityNull())
                 {
-                    currentAudioMarker = (AudioMarker)_idToMarkerDictionary[id];
+                    _currentAudioMarker = (AudioMarker)_idToMarkerDictionary[id];
                     PlayMarkerSound();
                 }
                 else return;
             }
             else
             {
-                if (currentVisualMarker.IsUnityNull())
+                if (_currentVisualMarker.IsUnityNull())
                 {
-                    currentVisualMarker = (VisualMarker)_idToMarkerDictionary[id];
+                    _currentVisualMarker = (VisualMarker)_idToMarkerDictionary[id];
                     DisplayMarkerModel();
                 }
                 else return;
@@ -121,7 +127,7 @@ namespace GameLogic
 
         private void PlayMarkerSound()
         {
-            _audioSource.clip = currentAudioMarker.SoundClip;
+            _audioSource.clip = _currentAudioMarker.SoundClip;
             _audioSource.PlayDelayed(1);
         }
     }

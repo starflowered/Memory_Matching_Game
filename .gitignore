@@ -12,6 +12,9 @@
 /[Aa]ssets/[Vv]uforia
 /[Pp]ackages/com.ptc.vuforia.engine-10.15.4.tgz
 
+# Vuforia generated file
+QCAR/somedata16
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -111,3 +114,4 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
