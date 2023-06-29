@@ -1,0 +1,210 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2858428876066854523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2858428876066854524}
+  - component: {fileID: 2858428876066854525}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2858428876066854524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2858428876066854523}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2858428876066854525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2858428876066854523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b9426a803a76a47b9c636a62c17887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 90f58528f1540f04d9f176e20e07d6bb, type: 2}
+  sounds:
+  - name: chicken_1
+    clip: {fileID: 8300000, guid: acafd917de68bea4f97caaa3e0002f7a, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: chicken_2
+    clip: {fileID: 8300000, guid: e4213c94e7874d745919074f08eed7e5, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: cow_1
+    clip: {fileID: 8300000, guid: e5cc543b54565c64fa4abf8f5c40a6f9, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: cow_2
+    clip: {fileID: 8300000, guid: 889bed67caf0c9c418c904190fe13622, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: cow_3
+    clip: {fileID: 8300000, guid: 54b201854481eb64c939b0bff2eb8d50, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: duck_1
+    clip: {fileID: 8300000, guid: 5735293a68990ee4686ce02e2053b883, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: duck_2
+    clip: {fileID: 8300000, guid: d4e482fef8e647a40a8fddce1f1d8eb2, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: duck_3
+    clip: {fileID: 8300000, guid: fd5a010b2c4184f42b4fa618e273d0d5, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: pig_1
+    clip: {fileID: 8300000, guid: 1e2732f4c068d424384b9ef8fdea177c, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: pig_2
+    clip: {fileID: 8300000, guid: ff3b5ee45bc619b40872c033d69b86e2, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: pig_3
+    clip: {fileID: 8300000, guid: 1bf50925fe6d6144d84c6822ce3a100b, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: sheep_2
+    clip: {fileID: 8300000, guid: e39d309195a71444089981fcff490446, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: sheep_3
+    clip: {fileID: 8300000, guid: 5e16ac67e992fc04f98aac33e783347f, type: 3}
+    volume: 1
+    volumeVariance: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 2334051488050669122, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: music_waiting
+    clip: {fileID: 8300000, guid: 2725a5819f1649147a28423008a62b48, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 1
+    mixerGroup: {fileID: -4849505752558337286, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: match_correct
+    clip: {fileID: 8300000, guid: 4917d49155349b84da7478f441330ee2, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: -144743999866743425, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  - name: match_false
+    clip: {fileID: 8300000, guid: bd94efe206295e14aab44b8795174fa4, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: -144743999866743425, guid: 90f58528f1540f04d9f176e20e07d6bb,
+      type: 2}
+    source: {fileID: 0}
+  fadeDuration: 1
+  quietVolume: -80
+  loudVolume: 0
