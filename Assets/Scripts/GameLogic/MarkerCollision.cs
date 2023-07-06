@@ -34,7 +34,7 @@ namespace GameLogic
             }
             
             // notify subscribers
-            GameEvents.Instance.OnMatched(visualMarker.ID.Value, audioMarker.ID.Value);
+            GameEvents.instance.OnMatched(visualMarker.ID.Value, audioMarker.ID.Value);
         }
     }
 }

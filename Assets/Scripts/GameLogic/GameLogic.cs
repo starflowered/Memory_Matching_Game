@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Audio;
@@ -94,11 +95,13 @@ namespace GameLogic
 
         private List<MatchingMarkerContents> _matchingMarkerContentsCopy;
         private int _amountOfComparisons;
-        private float _startTime;
-        private float _endTime;
+        private DateTime _startTime;
+        private DateTime _endTime;
         private int _timeTookToFindAllMatches;
         
         #endregion
+
+        #region unity event methods
 
         private void OnEnable()
         {
@@ -108,7 +111,7 @@ namespace GameLogic
         private void OnDisable()
         {
             VuforiaApplication.Instance.OnVuforiaStarted -= InitAll;
-            GameEvents.Instance.Matched -= StartMatchEvaluation;
+            GameEvents.instance.matched -= StartMatchEvaluation;
         }
 
         private void Start()
@@ -128,10 +131,12 @@ namespace GameLogic
             _visualMarkerEvaluationIcon.gameObject.SetActive(false);
             _visualMarkerRenderer = _visualMarkerEvaluationIcon.GetComponent<UpdateRotation>().Renderer;
 
-            GameEvents.Instance.Matched += StartMatchEvaluation;
+            GameEvents.instance.matched += StartMatchEvaluation;
 
-            _startTime = Time.time;
+            _startTime = DateTime.Now;
         }
+
+        #endregion
 
         private void InitAll()
         {
@@ -437,7 +442,7 @@ namespace GameLogic
             //     return;
             // }
 
-            _endTime = Time.time;
+            _endTime = DateTime.Now;
             _collisionDetected = true;
             StartCoroutine(EvaluateMatch(visualMarkerId, audioMarkerId));
         }
@@ -479,6 +484,8 @@ namespace GameLogic
                 _audioMarkerEvaluationIcon.gameObject.SetActive(true);
 
                 // play match sound
+                if (_audioManager.IsUnityNull())
+                    _audioManager = FindObjectOfType<AudioManager>();
                 _audioManager.Play("match_correct");
 
                 // remove match from list
@@ -538,9 +545,9 @@ namespace GameLogic
 
             _collisionDetected = false;
 
-            if (matchingMarkerContents.Count == 0)
+            if (_matchingMarkerContentsCopy.Count == 0)
             {
-                GameEvents.Instance.OnGameFinished(_amountOfComparisons, _endTime - _startTime);
+                GameEvents.instance.OnGameFinished(_amountOfComparisons, _endTime.Subtract(_startTime));
                 yield return null;
             }
             
