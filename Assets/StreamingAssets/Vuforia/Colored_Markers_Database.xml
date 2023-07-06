@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+  <Tracking>
+    <ImageTarget name="visualMarker05" size="1.000000 1.000000" />
+    <ImageTarget name="visualMarker04" size="1.000000 1.000000" />
+    <ImageTarget name="visualMarker03" size="1.000000 1.000000" />
+    <ImageTarget name="visualMarker02" size="1.000000 1.000000" />
+    <ImageTarget name="visualMarker01" size="1.000000 1.000000" />
+    <ImageTarget name="debugMarker" size="1.000000 1.000000" />
+    <ImageTarget name="audioMarker05" size="1.000000 1.000000" />
+    <ImageTarget name="audioMarker04" size="1.000000 1.000000" />
+    <ImageTarget name="audioMarker03" size="1.000000 1.000000" />
+    <ImageTarget name="audioMarker02" size="1.000000 1.000000" />
+    <ImageTarget name="audioMarker01" size="1.000000 1.000000" />
+  </Tracking>
+</QCARConfig>

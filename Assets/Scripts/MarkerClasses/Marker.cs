@@ -12,6 +12,5 @@ namespace MarkerClasses
             Id = id;
             ImageTargetBehaviour = imageTargetBehaviour;
         }
-
     }
 }

@@ -14,5 +14,10 @@ namespace MarkerClasses
         {
             ObjectModel = objectModel;
         }
+        
+        public override string ToString()
+        {
+            return $"|visual marker {Id}|";
+        }
     }
 }
