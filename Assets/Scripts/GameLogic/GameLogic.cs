@@ -7,7 +7,6 @@ using MarkerClasses;
 using Unity.VisualScripting;
 using UnityEngine;
 using Vuforia;
-using Image = UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
 
 namespace GameLogic
@@ -16,7 +15,10 @@ namespace GameLogic
     {
         #region constants
 
+        // path to the vuforia database where all markers are saved
         private const string DatabasePath = "Vuforia/Colored_Markers.xml";
+        
+        // the rotation speed of the object spawned on top of a marker
         private const float RotationSpeed = 40f;
 
         #endregion
@@ -44,14 +46,7 @@ namespace GameLogic
         
         [SerializeField] [Tooltip("Material to show that the audio player should return their card to their side of the mat")]
         private Material returnCardToAudioPlayerMaterial;
-
-        [Header("UI")]
-        [SerializeField] [Tooltip("UI Element that shows the evaluation progress")] 
-        private GameObject progressUI;
         
-        [SerializeField] [Tooltip("The UI's image that shows the total progress amount")]
-        private Image progressAmountImage;
-
         [Header("Debug")] 
         [SerializeField] [Tooltip("If the run is a debug run, tick this")]
         private bool debug;
@@ -71,7 +66,7 @@ namespace GameLogic
         private Transform _audioMarkerEvaluationIcon;
         private Transform _visualMarkerEvaluationIcon;
         // save the renderers to change their materials, based on the current state
-        private Renderer _audioMarkerRenderer;
+        private Renderer _audioMarkerEvaluationIconRenderer;
         private Renderer _visualMarkerRenderer;
         // used to signal that a collision was detected
         private bool _collisionDetected;
@@ -93,10 +88,15 @@ namespace GameLogic
         // maps each id to id of unique matching marker
         private Dictionary<int, int> _matchingMarkerIDs;
 
+        // if a match was found, it is removed from this list. If the list is empty the game is finished
         private List<MatchingMarkerContents> _matchingMarkerContentsCopy;
+        // the amount of comparisons that is needed to find all matches
         private int _amountOfComparisons;
+        // the time when the game was started
         private DateTime _startTime;
+        // the time of when the game was finished
         private DateTime _endTime;
+        // the overall time that took the players to find all matches
         private int _timeTookToFindAllMatches;
         
         #endregion
@@ -105,13 +105,9 @@ namespace GameLogic
 
         private void OnEnable()
         {
+            // subscribe to events
             VuforiaApplication.Instance.OnVuforiaStarted += InitAll;
-        }
-
-        private void OnDisable()
-        {
-            VuforiaApplication.Instance.OnVuforiaStarted -= InitAll;
-            GameEvents.instance.matched -= StartMatchEvaluation;
+            GameEvents.instance.matched += StartMatchEvaluation;
         }
 
         private void Start()
@@ -121,23 +117,47 @@ namespace GameLogic
             debug = false;
 #endif
 
+            // get the audio manager
             _audioManager = FindObjectOfType<AudioManager>();
 
+            // instantiate the evaluation icons and disable them
             _audioMarkerEvaluationIcon = Instantiate(matchEvaluationPrefab).transform;
             _audioMarkerEvaluationIcon.gameObject.SetActive(false);
-            _audioMarkerRenderer = _audioMarkerEvaluationIcon.GetComponent<UpdateRotation>().Renderer;
+            if (!_audioMarkerEvaluationIcon.transform.GetChild(0).TryGetComponent(out _audioMarkerEvaluationIconRenderer))
+                Debug.LogError($"Renderer was not found on game object {_audioMarkerEvaluationIcon.name}");
 
             _visualMarkerEvaluationIcon = Instantiate(matchEvaluationPrefab).transform;
             _visualMarkerEvaluationIcon.gameObject.SetActive(false);
-            _visualMarkerRenderer = _visualMarkerEvaluationIcon.GetComponent<UpdateRotation>().Renderer;
-
-            GameEvents.instance.matched += StartMatchEvaluation;
-
+            if (!_visualMarkerEvaluationIcon.transform.GetChild(0).TryGetComponent(out _visualMarkerRenderer))
+                Debug.LogError($"Renderer was not found on game object {_visualMarkerEvaluationIcon.name}");
+            
+            // set the start time for time measurement
             _startTime = DateTime.Now;
+        }
+
+        private void OnDisable()
+        {
+            // unsubscribe from all events
+            
+            VuforiaApplication.Instance.OnVuforiaStarted -= InitAll;
+            GameEvents.instance.matched -= StartMatchEvaluation;
+            
+            foreach (var imageTargetBehaviour in _audioImageTargetBehaviours)
+            {
+                imageTargetBehaviour.OnTargetStatusChanged -= OnTargetStatusChanged;
+            }
+
+            foreach (var imageTargetBehaviour in _visualImageTargetBehaviours)
+            {
+                imageTargetBehaviour.OnTargetStatusChanged -= OnTargetStatusChanged;
+            }
         }
 
         #endregion
 
+        /// <summary>
+        /// Spawn models above markers in the scene and assign matching markers.
+        /// </summary>
         private void InitAll()
         {
             SpawnVisualMarkerModels();
@@ -145,15 +165,18 @@ namespace GameLogic
             InitMarkerIds();
         }
 
+        /// <summary>
+        /// Spawn models above all visual markers.
+        /// </summary>
         private void SpawnVisualMarkerModels()
         {
-            // init variables
+            // init dictionaries and lists
             _imageTargetBehaviours = new Dictionary<int, ImageTargetBehaviour>();
             _colliders = new Dictionary<int, Collider>();
             _visualImageTargetBehaviours = new List<ImageTargetBehaviour>();
             _audioImageTargetBehaviours = new List<ImageTargetBehaviour>();
             
-            // create image targets for each input marker
+            // create image targets for each marker inside the database
             for (var i = 1; i <= matchingMarkerContents.Count; i++) 
                 CreateInstantImageTarget($"visualMarker0{i}", false);
 
@@ -163,6 +186,9 @@ namespace GameLogic
             CreateDebugImageTarget();
         }
 
+        /// <summary>
+        /// Assign the given match details to markers.
+        /// </summary>
         private void InitMarkerIds()
         {
             // init dictionaries
@@ -245,12 +271,18 @@ namespace GameLogic
                 _matchingMarkerIDs.Add(audioMarker.ID.Value, visualMarker.ID.Value);
             }
             
+            // make a copy of the match information, this list can be modified
             _matchingMarkerContentsCopy = new List<MatchingMarkerContents>(matchingMarkerContents);
         }
 
+        /// <summary>
+        /// Create a target for a given marker.
+        /// </summary>
+        /// <param name="markerName">The name of the marker inside of the database</param>
+        /// <param name="isAudioMarker">If true, the target is treated as an audio marker, if false, as a visual marker</param>
         private void CreateInstantImageTarget(string markerName, bool isAudioMarker)
         {
-            Debug.Log($"Adding target {markerName}");
+            // Debug.Log($"Adding target {markerName}");
             
             // create image target
             var imageTargetBehaviour = VuforiaBehaviour.Instance.ObserverFactory.CreateImageTarget(DatabasePath, markerName);
@@ -277,6 +309,9 @@ namespace GameLogic
                 _visualImageTargetBehaviours.Add(imageTargetBehaviour);
         }
 
+        /// <summary>
+        /// Create the debug image target.
+        /// </summary>
         private void CreateDebugImageTarget()
         {
             // create image target
@@ -290,6 +325,11 @@ namespace GameLogic
             imageTargetBehaviour.gameObject.AddComponent<DebugMarker>();
         }
 
+        /// <summary>
+        /// Method that is called if the status of a marker has changed.
+        /// </summary>
+        /// <param name="marker">The marker which status has changed</param>
+        /// <param name="status">The current status</param>
         private void OnTargetStatusChanged(ObserverBehaviour marker, TargetStatus status)
         {
             // check if the marker has an ID
@@ -301,22 +341,24 @@ namespace GameLogic
 
             switch (status.Status)
             {
-                case Status.EXTENDED_TRACKED:
                 default:
+                case Status.EXTENDED_TRACKED:
                 case Status.NO_POSE:
-
-                    OnTargetLost(_imageTargetBehaviours[marker.ID.Value]);
+                    TargetLost(_imageTargetBehaviours[marker.ID.Value]);
                     break;
 
                 case Status.LIMITED:
                 case Status.TRACKED:
-
-                    OnTargetFound(_imageTargetBehaviours[marker.ID.Value]);
+                    TargetFound(_imageTargetBehaviours[marker.ID.Value]);
                     break;
             }
         }
 
-        private void OnTargetFound(ImageTargetBehaviour marker)
+        /// <summary>
+        /// A new target has been found by the Vuforia camera. 
+        /// </summary>
+        /// <param name="marker">The marker that was recognized</param>
+        private void TargetFound(ImageTargetBehaviour marker)
         {
             // check if the marker has an ID
             if (!marker.ID.HasValue)
@@ -327,17 +369,21 @@ namespace GameLogic
 
             var id = marker.ID.Value;
 
+            // enable the collider of the marker so it can collide with other markers
             _colliders[id].enabled = true;
 
+            // if the found marker is an audio marker
             if (_idToMarkerDictionary[id].GetType() == typeof(AudioMarker))
             {
+                // if the marker was already assigned, do not override
+                // -> will not recognize two audio markers
                 if (!_currentAudioMarker.IsUnityNull())
                     return;
 
                 // set recognized audio marker
                 _currentAudioMarker = (AudioMarker)_idToMarkerDictionary[id];
 
-                Debug.Log("Found Audio marker");
+                // Debug.Log("Found Audio marker");
 
                 if (_collisionDetected)
                 {
@@ -350,6 +396,7 @@ namespace GameLogic
             }
             else
             {
+                // analogue to the audio marker part (see above)
                 if (!_currentVisualMarker.IsUnityNull())
                 {
                     _instances[_currentVisualMarker.Id].SetActive(true);
@@ -372,6 +419,10 @@ namespace GameLogic
             }
         }
 
+        /// <summary>
+        /// Display the model of the given marker id.
+        /// </summary>
+        /// <param name="id">The id of the marker of which the spawned model should be displayed</param>
         private void DisplayMarkerModel(int id)
         {
             // enable spawned game object
@@ -381,6 +432,11 @@ namespace GameLogic
             StartCoroutine(RotateModel(_instances[id], RotationSpeed));
         }
 
+        /// <summary>
+        /// Rotate a given object with a given speed.
+        /// </summary>
+        /// <param name="instance">The object that should be rotated</param>
+        /// <param name="rotationSpeed">The speed with which the object should be rotated</param>
         private static IEnumerator RotateModel(GameObject instance, float rotationSpeed)
         {
             // rotate around self 
@@ -391,12 +447,19 @@ namespace GameLogic
             }
         }
 
+        /// <summary>
+        /// PLay the sound of the recognized marker.
+        /// </summary>
         private void PlayMarkerSound()
         {
             _audioManager.Play(_currentAudioMarker.SoundClipName);
         }
 
-        private void OnTargetLost(ImageTargetBehaviour marker)
+        /// <summary>
+        /// A target has been lost by the Vuforia camera. 
+        /// </summary>
+        /// <param name="marker">The marker that was lost</param>
+        private void TargetLost(ImageTargetBehaviour marker)
         {
             // check if the marker has an ID
             if (!marker.ID.HasValue)
@@ -407,83 +470,80 @@ namespace GameLogic
 
             var id = marker.ID.Value;
 
+            // disable the collider so that no collision happens accidentally
             _colliders[id].enabled = false;
 
+            // if the lost marker was an audio marker
             if (_idToMarkerDictionary[id].GetType() == typeof(AudioMarker))
             {
+                // remove the current marker and disable the corresponding evaluation icon
                 _currentAudioMarker = null;
                 _audioMarkerEvaluationIcon.gameObject.SetActive(false);
             }
 
             else
             {
+                // hide the spawned object of the marker
                 _instances[id].SetActive(false);
 
+                // remove the current marker and disable the corresponding evaluation icon
                 _currentVisualMarker = null;
                 _visualMarkerEvaluationIcon.gameObject.SetActive(false);
             }
 
+            // if both markers are null and there was a collision before, reset
+            // indicates the start of a new round
             if (_collisionDetected && _currentAudioMarker == null && _currentVisualMarker == null)
                 _collisionDetected = false;
         }
 
+        /// <summary>
+        /// Start the evaluation of the matched markers.
+        /// </summary>
+        /// <param name="visualMarkerId">The id of the visual marker</param>
+        /// <param name="audioMarkerId">The id of the audio marker</param>
         private void StartMatchEvaluation(int visualMarkerId, int audioMarkerId)
         {
+            // the evaluation is skipped of there already is a detected collision 
             if (_collisionDetected)
-            {
-                Debug.Log("There is a collision, evaluation is skipped");
                 return;
-            }
 
-            // if (_currentAudioMarker.IsUnityNull() || _currentVisualMarker.IsUnityNull())
-            // {
-            //     Debug.Log(
-            //         $"The current markers are null, evaluation is skipped ({_currentAudioMarker} | {_currentVisualMarker})");
-            //     return;
-            // }
-
+            // set the end time (the calculation time is not regarded)
             _endTime = DateTime.Now;
+            
             _collisionDetected = true;
+            
+            // evaluates the match
             StartCoroutine(EvaluateMatch(visualMarkerId, audioMarkerId));
         }
 
+        /// <summary>
+        /// Evaluate the found match.
+        /// </summary>
+        /// <param name="visualMarkerId">The id of the visual marker</param>
+        /// <param name="audioMarkerId">The id of the audio marker</param>
         private IEnumerator EvaluateMatch(int visualMarkerId, int audioMarkerId)
         {
-            // progressUI.SetActive(true);
-            // _audioMarkerEvaluationIcon.SetParent(null);
-            // _visualMarkerEvaluationIcon.SetParent(null);
-            //
-            // const float evaluationTime = 3f;
-            // const float progressAmount = 1f / evaluationTime;
-            // var totalProgress = 0f;
-            // for (var i = 0; i < evaluationTime; i++)
-            // {
-            //     // show circle timer progress
-            //     progressAmountImage.fillAmount = totalProgress;
-            //
-            //     // make progress
-            //     totalProgress += progressAmount;
-            //     yield return new WaitForSeconds(1);
-            // }
-
-            Debug.Log("Evaluating Match");
+            // Debug.Log("Evaluating Match");
             _amountOfComparisons++;
                 
             // set evaluation icon's position between both cards
             var vector = _imageTargetBehaviours[audioMarkerId].transform.position - _imageTargetBehaviours[visualMarkerId].transform.position;
             _audioMarkerEvaluationIcon.position = _imageTargetBehaviours[visualMarkerId].transform.position + 0.5f * Vector3.forward + 0.5f * vector;
 
+            // disable the object of the visual marker
             _instances[visualMarkerId].gameObject.SetActive(false);
 
+            // if the markers are a match
             if (_matchingMarkerIDs[audioMarkerId] == visualMarkerId)
             {
-                // markers match
-                _audioMarkerRenderer.material = validMatchMaterial;
+                // set the material of the evaluation icon
+                _audioMarkerEvaluationIconRenderer.material = validMatchMaterial;
                 
                 // show evaluation result
                 _audioMarkerEvaluationIcon.gameObject.SetActive(true);
 
-                // play match sound
+                // play match sound (was null when the scene was reset, work-around)
                 if (_audioManager.IsUnityNull())
                     _audioManager = FindObjectOfType<AudioManager>();
                 _audioManager.Play("match_correct");
@@ -492,13 +552,15 @@ namespace GameLogic
                 _matchingMarkerContentsCopy.RemoveAll(match =>
                     match.AudioId == audioMarkerId && match.VisualId == visualMarkerId);
                 
+                // show remove cards icons
                 StartCoroutine(RemoveCardsFromPlayField(visualMarkerId, audioMarkerId));
             }
 
+            // if the markers are no match
             else
             {
-                // markers do not match
-                _audioMarkerRenderer.material = invalidMatchMaterial;
+                // set the material of the evaluation icon
+                _audioMarkerEvaluationIconRenderer.material = invalidMatchMaterial;
 
                 // show evaluation result
                 _audioMarkerEvaluationIcon.gameObject.SetActive(true);
@@ -506,23 +568,26 @@ namespace GameLogic
                 // play no match sound
                 _audioManager.Play("match_false");
 
+                // show return cards to players icons
                 StartCoroutine(ReturnCardsToPlayers(visualMarkerId, audioMarkerId));
             }
-
-            progressUI.SetActive(false);
-            progressAmountImage.fillAmount = 0;
             
             yield return null;
         }
 
+        /// <summary>
+        /// Show icons that motivate the players to remove the cards from the play field.
+        /// </summary>
+        /// <param name="visualMarkerId">The id of the visual marker</param>
+        /// <param name="audioMarkerId">The id of the audio marker</param>
         private IEnumerator RemoveCardsFromPlayField(int visualMarkerId, int audioMarkerId)
         {
-            Debug.Log("Cards Match!");
+            // Debug.Log("Cards Match!");
 
             // wait so that visual player can see that it was a match
             yield return new WaitForSeconds(1.5f);
 
-            Debug.Log("Remove cards from play field!");
+            // Debug.Log("Remove cards from play field!");
 
             // set positions of icons
             // _audioMarkerEvaluationIcon.SetParent(_imageTargetBehaviours[audioMarkerId].transform);
@@ -533,11 +598,13 @@ namespace GameLogic
             _visualMarkerEvaluationIcon.gameObject.SetActive(true);
 
             // show RemoveCardsFromPlayFieldPrefab on top of both markers
-            _audioMarkerRenderer.material = removeCardsFromPlayFieldMaterial;
+            _audioMarkerEvaluationIconRenderer.material = removeCardsFromPlayFieldMaterial;
             _visualMarkerRenderer.material = removeCardsFromPlayFieldMaterial;
 
+            // keeps updating the position of the icons
             StartCoroutine(UpdateIconPosition(audioMarkerId, visualMarkerId));
             
+            // wait until both cards were removed from the play field
             while (_currentAudioMarker != null || _currentVisualMarker != null)
             {
                 yield return new WaitForSeconds(1);
@@ -545,6 +612,7 @@ namespace GameLogic
 
             _collisionDetected = false;
 
+            // if all matches were found notify game finished event
             if (_matchingMarkerContentsCopy.Count == 0)
             {
                 GameEvents.instance.OnGameFinished(_amountOfComparisons, _endTime.Subtract(_startTime));
@@ -554,14 +622,19 @@ namespace GameLogic
             yield return new WaitForSeconds(3);
         }
         
+        /// <summary>
+        /// Show icons that motivate the players to return the cards to the players.
+        /// </summary>
+        /// <param name="visualMarkerId">The id of the visual marker</param>
+        /// <param name="audioMarkerId">The id of the audio marker</param>
         private IEnumerator ReturnCardsToPlayers(int visualMarkerId, int audioMarkerId)
         {
-            Debug.Log("Cards do not Match!");
+            // Debug.Log("Cards do not Match!");
 
             // wait so that visual player can see that it was no match
             yield return new WaitForSeconds(1.5f);
 
-            Debug.Log("Return cards to players!");
+            // Debug.Log("Return cards to players!");
 
             // set positions of icons
             // _audioMarkerEvaluationIcon.SetParent(_imageTargetBehaviours[audioMarkerId].transform);
@@ -574,11 +647,13 @@ namespace GameLogic
             _visualMarkerEvaluationIcon.gameObject.SetActive(true);
 
             // show ReturnCardsToPlayersPrefab on top of both markers
-            _audioMarkerRenderer.material = returnCardToAudioPlayerMaterial;
+            _audioMarkerEvaluationIconRenderer.material = returnCardToAudioPlayerMaterial;
             _visualMarkerRenderer.material = returnCardToVisualPlayerMaterial;
 
+            // keeps updating the position of the icons
             StartCoroutine(UpdateIconPosition(audioMarkerId, visualMarkerId));
 
+            // wait until both cards were removed from the play field
             while (_currentAudioMarker != null || _currentVisualMarker != null)
             {
                 yield return new WaitForSeconds(1);
@@ -588,6 +663,11 @@ namespace GameLogic
             yield return new WaitForSeconds(3);
         }
 
+        /// <summary>
+        /// Update the position of the icons.
+        /// </summary>
+        /// <param name="visualMarkerId">The id of the visual marker</param>
+        /// <param name="audioMarkerId">The id of the audio marker</param>
         private IEnumerator UpdateIconPosition(int audioMarkerId, int visualMarkerId)
         {
             while (_currentAudioMarker != null && _currentVisualMarker != null)

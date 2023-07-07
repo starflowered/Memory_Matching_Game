@@ -5,25 +5,27 @@ namespace GameLogic
 {
     public class GameEvents : MonoBehaviour
     {
+        // singleton
         public static GameEvents instance;
 
+        // events
         public Action<int, int> matched;
-        
         public Action<int, TimeSpan> gameFinished;
-        
         public Action newHighScoreReached;
 
         private void OnEnable()
         {
+            // create singleton
             if (instance != null) 
                 Destroy(gameObject);
 
             instance = this;
         }
+        
+        #region invoke event methods
 
         public void OnMatched(int markerId1, int markerId2)
         {
-            Debug.LogWarning($"Found Match between {markerId1} and {markerId2}!");
             matched?.Invoke(markerId1, markerId2);
         }
 
@@ -36,5 +38,7 @@ namespace GameLogic
         {
             newHighScoreReached?.Invoke();
         }
+
+        #endregion
     }
 }
