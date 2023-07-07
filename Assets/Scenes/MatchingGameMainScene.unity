@@ -542,68 +542,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1013616310
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1013616312}
-  - component: {fileID: 1013616311}
-  m_Layer: 0
-  m_Name: GameLogic_01
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1013616311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013616310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c2991863ae481782053011278c0b13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  matchingMarkerContents:
-  - audioClipName: chicken
-    visualModel: {fileID: 1206511787925574, guid: 3b1e3e9155d404942bc65d9aa80120ba,
-      type: 3}
-  matchEvaluationPrefab: {fileID: 777718534907634892, guid: a57b3b14782e2764bbab1e3c6905749f,
-    type: 3}
-  validMatchMaterial: {fileID: 2100000, guid: 72416472f39996a45b2e5c06b2002caa, type: 2}
-  invalidMatchMaterial: {fileID: 2100000, guid: 95a59bb291d36824dbc850243c07d0e8,
-    type: 2}
-  removeCardsFromPlayFieldMaterial: {fileID: 2100000, guid: a7a4f48d621b79841b5a99f12ef2c589,
-    type: 2}
-  returnCardToVisualPlayerMaterial: {fileID: 2100000, guid: 844a5d6bb036b604e9f8b2fc4159cd03,
-    type: 2}
-  returnCardToAudioPlayerMaterial: {fileID: 2100000, guid: e9665c56f1ebb7f4d8c04cd9c855cba1,
-    type: 2}
-  progressUI: {fileID: 1004869328545548435}
-  progressAmountImage: {fileID: 1004869328700050545}
-  debug: 1
---- !u!4 &1013616312
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013616310}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1030226898
 GameObject:
   m_ObjectHideFlags: 0
@@ -1354,7 +1292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1959416627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,8 +1332,6 @@ MonoBehaviour:
     type: 2}
   returnCardToAudioPlayerMaterial: {fileID: 2100000, guid: e9665c56f1ebb7f4d8c04cd9c855cba1,
     type: 2}
-  progressUI: {fileID: 1004869328545548435}
-  progressAmountImage: {fileID: 1004869328700050545}
   debug: 1
 --- !u!4 &1959416628
 Transform:
