@@ -16,7 +16,7 @@ namespace GameLogic
         #region constants
 
         // path to the vuforia database where all markers are saved
-        private const string DatabasePath = "Vuforia/Colored_Markers.xml";
+        private const string DatabasePath = "Vuforia/Colored_Markers_Mirrored.xml";
         
         // the rotation speed of the object spawned on top of a marker
         private const float RotationSpeed = 40f;
