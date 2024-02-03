@@ -57,7 +57,3 @@ This project was evaluated with parents of our target audience. Some of the key 
 4. Perceived Usability as a teaching tool
 
 </details>
-
-# Links
-
-GitHub: https://github.com/Pydes-boop  
