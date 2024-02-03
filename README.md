@@ -1,5 +1,7 @@
 # Demo Video (Turn Sound On)
 
+In the following Demo Video you get to experience both players perspectives! **Remember** that in a typical game the players would have **seperate** senses only experiencing **either** sound or video:
+
 https://github.com/Pydes-boop/Memory_Matching_Game/assets/59734957/82c6396c-9ad9-4ee1-bbff-638bb4d2df56
 
 # Overview
