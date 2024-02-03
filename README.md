@@ -1,3 +1,7 @@
+# Demo Video (Turn Sound On)
+
+https://github.com/Pydes-boop/Memory_Matching_Game/assets/59734957/c0627209-6b15-4407-b1d1-d6669207894f
+
 # Overview
 
 Memory Matching Game is intended for young children to learn about their favourite farm animals!
@@ -55,4 +59,3 @@ This project was evaluated with parents of our target audience. Some of the key 
 # Links
 
 GitHub: https://github.com/Pydes-boop  
-Demo Video: [drive.google.com](https://drive.google.com/file/d/12ba7xbOTz3j7ImKDeBsoJX3NJKK3szQA/view?usp=sharing)  
